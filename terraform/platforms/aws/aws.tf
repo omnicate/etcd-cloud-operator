@@ -13,7 +13,7 @@
 // limitations under the License.
 
 resource "aws_s3_bucket" "backups" {
-  bucket = "${var.name}"
+  bucket = "${var.eco_backup_bucket == "" ? var.name : var.eco_backup_bucket}"
   acl    = "private"
 }
 

@@ -163,7 +163,7 @@ data "template_file" "policy" {
   template = "${file("${path.module}/policy.json")}"
 
   vars {
-    bucket = "${aws_s3_bucket.backups.bucket}"
+    bucket = "${var.eco_backup_bucket == "" ? var.name : var.eco_backup_bucket}"
   }
 }
 

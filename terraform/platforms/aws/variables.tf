@@ -65,3 +65,8 @@ variable "metrics_security_group_ids" {
   type        = "list"
   default     = []
 }
+
+variable "eco_backup_bucket" {
+  description = "Name of the bucket to save snapshots to. Defaults to 'name'."
+  default     = ""
+}
