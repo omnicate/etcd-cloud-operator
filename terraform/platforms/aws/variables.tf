@@ -54,6 +54,12 @@ variable "load_balancer_internal" {
   description = "Defines whether the load balancer for etcd should be internet facing or internal"
 }
 
+variable "ssh_security_group_ids" {
+  description = "List of the security group IDs authorized to reach the SSH port using the internal IPs of the instances (if empty, SSH is not exposed)."
+  type        = "list"
+  default     = []
+}
+
 variable "load_balancer_security_group_ids" {
   description = "List of the security group IDs to apply to the load balancer (ingress TCP 2379) (if empty, defaults to open to all)"
   type        = "list"
