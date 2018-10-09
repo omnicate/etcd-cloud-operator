@@ -73,8 +73,8 @@ resource "aws_launch_configuration" "main" {
   associate_public_ip_address = "${var.associate_public_ips}"
 
   root_block_device {
-    volume_type   = "gp2"
-    volume_size   = "${var.instance_disk_size}"
+    volume_type = "gp2"
+    volume_size = "${var.instance_disk_size}"
   }
 
   lifecycle {
@@ -88,9 +88,9 @@ resource "aws_security_group" "instances" {
   vpc_id = "${var.vpc_id}"
 
   ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
     security_groups = ["${var.ssh_security_group_ids}"]
   }
 

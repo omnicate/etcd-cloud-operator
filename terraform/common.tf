@@ -30,7 +30,7 @@
 
 variable "instance_ssh_keys" {
   description = "List of SSH public keys that are allowed to login into nodes"
-  type = "list"
+  type        = "list"
 }
 
 variable "eco_image" {
@@ -57,16 +57,17 @@ variable "eco_snapshot_ttl" {
 
 variable "eco_backend_quota" {
   description = "Defines the maximum amount of data that etcd can store, in bytes, before going into maintenance mode"
-  default = "2147483648"
+  default     = "2147483648"
 }
 
 variable "ca" {
   description = "Optional CA keypair from which all certificates should be generated ('cert', 'key', 'alg')"
   type        = "map"
-  default     = {
-    "cert" = "",
-    "key"  = "",
-    "alg"  = "",
+
+  default = {
+    "cert" = ""
+    "key"  = ""
+    "alg"  = ""
   }
 }
 
@@ -96,8 +97,8 @@ module "configuration" {
   eco_key_file            = "${var.eco_enable_tls == true ? module.ignition.eco_key_file : ""}"
   eco_require_client_cert = "${var.eco_require_client_certs}"
 
-  eco_snapshot_interval             = "${var.eco_snapshot_interval}"
-  eco_snapshot_ttl                  = "${var.eco_snapshot_ttl}"
+  eco_snapshot_interval = "${var.eco_snapshot_interval}"
+  eco_snapshot_ttl      = "${var.eco_snapshot_ttl}"
 
   eco_backend_quota = "${var.eco_backend_quota}"
 }
@@ -105,7 +106,7 @@ module "configuration" {
 module "ignition" {
   source = "../../modules/ignition"
 
-  instance_ssh_keys = "${var.instance_ssh_keys}"
+  instance_ssh_keys = ["${var.instance_ssh_keys}"]
 
   eco_image         = "${var.eco_image}"
   eco_configuration = "${module.configuration.configuration}"

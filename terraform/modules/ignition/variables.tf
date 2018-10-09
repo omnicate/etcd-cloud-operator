@@ -14,7 +14,7 @@
 
 variable "instance_ssh_keys" {
   description = "List of SSH public keys that are allowed to login into nodes"
-  type = "list"
+  type        = "list"
 }
 
 variable "eco_image" {

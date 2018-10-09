@@ -19,7 +19,7 @@ data "ignition_config" "main" {
     "${data.ignition_file.eco-crt.id}",
     "${data.ignition_file.eco-key.id}",
     "${data.ignition_file.eco-health.id}",
-    "${data.ignition_file.e.id}"
+    "${data.ignition_file.e.id}",
   ]
 
   systemd = [
@@ -36,7 +36,10 @@ data "ignition_config" "main" {
 
 data "ignition_user" "core" {
   name = "core"
-  ssh_authorized_keys = "${var.instance_ssh_keys}"
+
+  # Even though the type of the instance_ssh_keys var is a
+  # list, we still need to ensure that it actually is one here
+  ssh_authorized_keys = ["${var.instance_ssh_keys}"]
 }
 
 data "ignition_systemd_unit" "docker" {
