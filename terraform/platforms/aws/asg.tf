@@ -14,6 +14,7 @@
 
 data "aws_ami" "coreos" {
   most_recent = true
+  owners      = ["595879546273"]
 
   filter {
     name   = "name"
@@ -28,11 +29,6 @@ data "aws_ami" "coreos" {
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
-  }
-
-  filter {
-    name   = "owner-id"
-    values = ["595879546273"]
   }
 }
 
