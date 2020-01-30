@@ -15,7 +15,7 @@
 data "template_file" "configuration" {
   template = "${file("${path.module}/config.yaml")}"
 
-  vars {
+  vars = {
     asg_provider      = "${var.eco_asg_provider}"
     snapshot_provider = "${var.eco_snapshot_provider}"
 
