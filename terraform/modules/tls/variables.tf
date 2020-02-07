@@ -18,7 +18,7 @@ variable "enabled" {
 
 variable "ca" {
   description = "Optional CA keypair from which all certificates should be generated ('cert', 'key', 'alg')"
-  type        = "map"
+  type        = map
 }
 
 variable "common_name" {

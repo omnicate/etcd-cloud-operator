@@ -33,61 +33,61 @@ data "aws_ami" "coreos" {
 }
 
 resource "aws_autoscaling_group" "main" {
-  name = "${var.name}"
+  name = var.name
 
-  max_size         = "${var.size}"
-  min_size         = "${var.size}"
-  desired_capacity = "${var.size}"
+  max_size         = var.size
+  min_size         = var.size
+  desired_capacity = var.size
 
-  load_balancers            = ["${aws_elb.clients.name}"]
+  load_balancers            = [aws_elb.clients.name]
   health_check_grace_period = 120
   health_check_type         = "EC2"
 
-  vpc_zone_identifier  = ["${var.subnets_ids}"]
-  launch_configuration = "${aws_launch_configuration.main.name}"
+  vpc_zone_identifier  = var.subnets_ids
+  launch_configuration = aws_launch_configuration.main.name
 
   tags = [
     {
       key                 = "Name"
-      value               = "${var.name}"
+      value               = var.name
       propagate_at_launch = true
     },
   ]
 }
 
 resource "aws_launch_configuration" "main" {
-  name_prefix = "${var.name}"
+  name_prefix = var.name
 
-  image_id      = "${data.aws_ami.coreos.image_id}"
-  instance_type = "${var.instance_type}"
+  image_id      = data.aws_ami.coreos.image_id
+  instance_type = var.instance_type
 
-  security_groups      = ["${aws_security_group.instances.id}"]
-  iam_instance_profile = "${aws_iam_instance_profile.instances.arn}"
-  user_data            = "${module.ignition.ignition}"
+  security_groups      = [aws_security_group.instances.id]
+  iam_instance_profile = aws_iam_instance_profile.instances.arn
+  user_data            = module.ignition.ignition
   ebs_optimized        = "true"
 
-  associate_public_ip_address = "${var.associate_public_ips}"
+  associate_public_ip_address = var.associate_public_ips
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${var.instance_disk_size}"
+    volume_size = var.instance_disk_size
   }
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes        = ["image_id"]
+    ignore_changes        = [image_id]
   }
 }
 
 resource "aws_security_group" "instances" {
   name   = "instances.${var.name}"
-  vpc_id = "${var.vpc_id}"
+  vpc_id = var.vpc_id
 
   ingress {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
-    security_groups = ["${var.ssh_security_group_ids}"]
+    security_groups = var.ssh_security_group_ids
   }
 
   ingress {
@@ -101,7 +101,7 @@ resource "aws_security_group" "instances" {
     from_port       = 2379
     to_port         = 2379
     protocol        = "tcp"
-    security_groups = ["${aws_elb.clients.source_security_group_id}"]
+    security_groups = [aws_elb.clients.source_security_group_id]
     self            = true
   }
 
@@ -116,7 +116,7 @@ resource "aws_security_group" "instances" {
     from_port       = 2381
     to_port         = 2381
     protocol        = "tcp"
-    security_groups = ["${var.metrics_security_group_ids}"]
+    security_groups = var.metrics_security_group_ids
     self            = true
   }
 
@@ -124,7 +124,7 @@ resource "aws_security_group" "instances" {
     from_port       = 9100
     to_port         = 9100
     protocol        = "tcp"
-    security_groups = ["${var.metrics_security_group_ids}"]
+    security_groups = var.metrics_security_group_ids
     self            = true
   }
 
@@ -137,12 +137,12 @@ resource "aws_security_group" "instances" {
 }
 
 resource "aws_iam_instance_profile" "instances" {
-  name = "${var.name}"
-  role = "${aws_iam_role.instances.name}"
+  name = var.name
+  role = aws_iam_role.instances.name
 }
 
 resource "aws_iam_role" "instances" {
-  name = "${var.name}"
+  name = var.name
   path = "/"
 
   assume_role_policy = <<EOF
@@ -163,15 +163,15 @@ EOF
 }
 
 data "template_file" "policy" {
-  template = "${file("${path.module}/policy.json")}"
+  template = file("${path.module}/policy.json")
 
-  vars {
-    bucket = "${var.eco_backup_bucket == "" ? var.name : var.eco_backup_bucket}"
+  vars = {
+    bucket = var.eco_backup_bucket == "" ? var.name : var.eco_backup_bucket
   }
 }
 
 resource "aws_iam_role_policy" "instances" {
-  name   = "${var.name}"
-  role   = "${aws_iam_role.instances.id}"
-  policy = "${data.template_file.policy.rendered}"
+  name   = var.name
+  role   = aws_iam_role.instances.id
+  policy = data.template_file.policy.rendered
 }

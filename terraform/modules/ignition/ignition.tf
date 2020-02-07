@@ -37,20 +37,17 @@ data "ignition_config" "main" {
 data "ignition_user" "core" {
   name = "core"
 
-  # Even though the type of the instance_ssh_keys var is a
-  # list, we still need to ensure that it actually is one here
-  ssh_authorized_keys = ["${var.instance_ssh_keys}"]
+  ssh_authorized_keys = var.instance_ssh_keys.0
 }
 
 data "ignition_systemd_unit" "docker" {
   name = "docker.service"
 
-  dropin = [
-    {
+  dropin {
       name    = "10-dockeropts.conf"
       content = "[Service]\nEnvironment=\"DOCKER_OPTS=--log-opt max-size=50m --log-opt max-file=10\"\n"
-    },
-  ]
+    }
+
 }
 
 data "ignition_systemd_unit" "locksmithd" {
@@ -66,7 +63,7 @@ data "ignition_systemd_unit" "update-engine" {
 data "template_file" "eco-service" {
   template = "${file("${path.module}/resources/eco.service")}"
 
-  vars {
+  vars = {
     image = "${var.eco_image}"
   }
 }

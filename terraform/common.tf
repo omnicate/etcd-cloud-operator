@@ -30,7 +30,7 @@
 
 variable "instance_ssh_keys" {
   description = "List of SSH public keys that are allowed to login into nodes"
-  type        = "list"
+  type        = list
 }
 
 variable "eco_image" {
@@ -62,7 +62,7 @@ variable "eco_backend_quota" {
 
 variable "ca" {
   description = "Optional CA keypair from which all certificates should be generated ('cert', 'key', 'alg')"
-  type        = "map"
+  type        = map
 
   default = {
     "cert" = ""
@@ -74,7 +74,8 @@ variable "ca" {
 // Modules.
 
 module "tls" {
-  source = "../../modules/tls"
+//  source = "github.com/omnicate/etcd-cloud-operator.git//terraform/modules/tls"
+  source = "/Users/holger/dev/etcd-cloud-operator/terraform/modules/tls"
 
   enabled               = "${var.eco_enable_tls}"
   ca                    = "${var.ca}"
@@ -83,7 +84,8 @@ module "tls" {
 }
 
 module "configuration" {
-  source = "../../modules/configuration"
+//  source = "github.com/omnicate/etcd-cloud-operator.git//terraform/modules/configuration"
+  source = "/Users/holger/dev/etcd-cloud-operator/terraform/modules/configuration"
 
   eco_asg_provider      = "${local.asg_provider}"
   eco_snapshot_provider = "${local.snapshot_provider}"
@@ -104,7 +106,8 @@ module "configuration" {
 }
 
 module "ignition" {
-  source = "../../modules/ignition"
+//  source = "github.com/omnicate/etcd-cloud-operator.git//terraform/modules/ignition"
+  source = "/Users/holger/dev/etcd-cloud-operator/terraform/modules/ignition"
 
   instance_ssh_keys = ["${var.instance_ssh_keys}"]
 
